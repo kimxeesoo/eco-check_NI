@@ -56,6 +56,13 @@ export default async function SearchPage(props: PageProps<"/search">) {
     redirect(`/report/${results[0].id}`);
   }
 
+  // 서울 아파트로 넘어왔지만 아파트 API에 단지가 없으면(소규모 공동주택 등),
+  // 홈에서 실어 보낸 건축물대장 id(p)로 성적표를 바로 연다.
+  const parcelId = normalizeQuery(searchParams.p);
+  if (hasQuery && results.length === 0 && parcelId && /^bld-[\d-]+$/.test(parcelId)) {
+    redirect(`/report/${parcelId}`);
+  }
+
   return (
     <SiteShell>
       <PageSection className="flex flex-col gap-[var(--space-6)]">

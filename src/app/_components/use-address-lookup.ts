@@ -45,7 +45,10 @@ export function useAddressLookup() {
         router.push(withApartmentChecklistParams(`/report/${encodeAddressId(jibunAddress, data.buildingName)}`, checklist));
       } else if (data.apartment === "Y" && data.sido.startsWith("서울")) {
         // 서울 아파트는 단지 단위 모델이 있다 — 아파트 API는 지번을 모르고 이름/도로명으로만 찾으니, 건물명·도로명도 같이 넘긴다.
-        router.push(searchHref(jibunAddress, data.buildingName, data.roadAddress));
+        // 아파트 API에 없는 단지(소규모 공동주택 등)는 건축물대장 성적표로 넘어가도록 bld- id 도 함께 싣는다.
+        const parcel = parcelFromPostcode(data);
+        const href = searchHref(jibunAddress, data.buildingName, data.roadAddress);
+        router.push(parcel ? `${href}&p=${encodeURIComponent(encodeBuildingId(parcel))}` : href);
       } else {
         // 그 밖의 모든 건축물(전국)은 건축물대장으로 찾는다. 법정동코드가 없으면 예전 검색 화면으로.
         const parcel = parcelFromPostcode(data);
