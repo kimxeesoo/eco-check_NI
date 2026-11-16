@@ -213,4 +213,22 @@ http://localhost:3000 에서 확인합니다.
 
 ## 배포
 
-백엔드는 Render(Docker, Root Directory `beec`), 프론트는 Vercel에 배포합니다. 절차와 시연 전 체크리스트는 [`DEPLOY.md`](DEPLOY.md)를 보세요.
+백엔드는 Render(Docker, Root Directory `beec`), 프론트는 Vercel에 배포합니다. 절차와 운영 참고 사항은 [`DEPLOY.md`](DEPLOY.md)를 보세요.
+
+<br>
+
+## 프로젝트 이력
+
+에코체크는 SKThon 5팀 NI가 해커톤 기간에 만든 프로젝트를 이어서 고도화한 저장소입니다. 해커톤 당시의 커밋 기록도 이 저장소에 그대로 이어져 있습니다.
+
+| 시기 | 내용 | 저장소 |
+| --- | --- | --- |
+| 2026.09.10 ~ 09.27 | SKThon 해커톤 팀 프로젝트로 시작 | [Do-00/SKThon_5Team_NI](https://github.com/Do-00/SKThon_5Team_NI) |
+| 2026.10.24 ~ 10.25 | 주제를 전체 건축물로 넓히고 AI 법규·지원 내비게이터, 인용 원문 검증 추가 | [kimxeesoo/SKThon-Team5-NI](https://github.com/kimxeesoo/SKThon-Team5-NI) |
+| 2026.10.25 ~ | 에코체크 저장소로 옮겨 그린리모델링 챌린지 출품작으로 고도화 | 현재 저장소 |
+
+### 함께 만든 사람들
+
+| [@kimxeesoo](https://github.com/kimxeesoo) | [@youbin999](https://github.com/youbin999) | [@byul0227](https://github.com/byul0227) | [@Do-00](https://github.com/Do-00) |
+| :-: | :-: | :-: | :-: |
+| <img src="https://github.com/kimxeesoo.png" width="100" /> | <img src="https://github.com/youbin999.png" width="100" /> | <img src="https://github.com/byul0227.png" width="100" /> | <img src="https://github.com/Do-00.png" width="100" /> |
