@@ -1,29 +1,58 @@
-# 외부 링크 배포 (심사위원이 URL로 열어 보는 용도)
+# 배포 가이드
 
-이름 규칙: 팀명은 NI로 통일한다. 학교명은 쓰지 않는다. 서비스 이름 예) `ecocheck-gr`.
+백엔드(`beec`)는 Render, 프론트엔드는 Vercel에 배포합니다.
 
-## 1. 백엔드 beec → Render (Docker)
-1. render.com → New → Web Service → 저장소 연결 → **Root Directory: `beec`**, Runtime: **Docker**
-2. Instance Type: Free (또는 Starter). 서비스 이름은 `ecocheck-api` 처럼 중립적으로.
-3. 배포가 끝나면 주소(`https://ecocheck-api.onrender.com`)를 복사한다.
-4. `주소/actuator`가 아니라 `주소/api/...` 중 아무 API 하나를 브라우저로 열어 응답이 오는지 본다. 첫 기동은 10~60초.
+| 구분 | 플랫폼 | 주소 |
+| --- | --- | --- |
+| 프론트엔드 | Vercel | https://eco-check-ni.vercel.app |
+| 백엔드 | Render (Docker) | https://ecocheck-api.onrender.com |
 
-## 2. 프론트 → Vercel
-1. vercel.com → Add New Project → 저장소 선택 → **프로젝트 이름 `ecocheck-gr`** (주소가 `ecocheck-gr.vercel.app`)
-2. Environment Variables:
-   - `NEXT_PUBLIC_BEEC_API_BASE_URL` = 위 Render 주소 (끝에 `/` 없이)
-   - `BEEC_API_BASE_URL` = 같은 주소
-   - `GEMINI_API_KEY`, `GEMINI_MODEL` (예: gemini-2.5-flash)
-   - `BLDG_HUB_API_KEY` (건축HUB 키)
-   - `NEXT_PUBLIC_KAKAO_MAP_KEY`
-3. Deploy. `NEXT_PUBLIC_` 값은 빌드 때 박히므로 바꾸면 **Redeploy**.
+<br>
 
-## 3. 카카오 개발자 콘솔 (필수)
-- 내 애플리케이션 → 플랫폼 → Web → 사이트 도메인에 `https://ecocheck-gr.vercel.app` 추가
-- 주소검색(우편번호)·지도가 이 등록 없이는 배포 주소에서 동작하지 않는다.
+## 1. 백엔드 `beec` → Render
 
-## 4. 심사 직전 체크
-- Render 무료 인스턴스는 15분 쉬면 잠든다. **시연 5분 전에 사이트를 한 번 열어 깨워 둔다.**
-- 시연 질문 2~3개를 미리 한 번씩 눌러 둔다(AI 답은 캐시되지만 서버 재시작 시 사라진다).
-- Gemini 할당량 소진에 대비해 결제를 켜거나 다른 키를 준비한다.
-- 배포 주소에는 팀명이 없는지, 소스·README에도 없는지 확인한다.
+1. render.com → **New** → **Web Service** → 저장소를 연결합니다.
+2. 설정
+   - **Root Directory**: `beec`
+   - **Runtime**: Docker (`beec/Dockerfile` 사용)
+   - **Instance Type**: Free 또는 Starter
+3. 배포가 끝나면 서비스 주소를 복사해 둡니다.
+4. `주소/api/...` 중 아무 API 하나를 브라우저로 열어 응답이 오는지 확인합니다. 첫 기동에는 10~60초가 걸립니다.
+
+> 포트는 Render가 `PORT` 환경변수로 넣어 주고, `application.properties`가 이를 읽습니다. 무료 인스턴스(메모리 512MB)에서도 동작하도록 Dockerfile에서 힙을 380MB로 제한합니다.
+
+<br>
+
+## 2. 프론트엔드 → Vercel
+
+1. vercel.com → **Add New Project** → 저장소를 선택합니다.
+2. **Environment Variables**를 등록합니다.
+
+   | 이름 | 값 |
+   | --- | --- |
+   | `NEXT_PUBLIC_API_BASE_URL` | Render 백엔드 주소 (끝에 `/` 없이) |
+   | `BEEC_API_BASE_URL` | 같은 주소 (서버 쪽 Route Handler용) |
+   | `NEXT_PUBLIC_KAKAO_MAP_KEY` | 카카오 JavaScript 키 |
+   | `KAKAO_REST_KEY` | 카카오 REST API 키 |
+   | `GEMINI_API_KEY` | Gemini API 키 |
+   | `GEMINI_MODEL` | 선택. 예: `gemini-2.5-flash` |
+   | `BLDG_HUB_API_KEY` | 건축HUB API 키 |
+
+   `NEXT_PUBLIC_API_BASE_URL` 대신 `NEXT_PUBLIC_BEEC_API_BASE_URL`을 써도 인식합니다.
+
+3. **Deploy**합니다. `NEXT_PUBLIC_` 값은 빌드할 때 번들에 들어가므로, 값을 바꾸면 **Redeploy**해야 합니다.
+
+<br>
+
+## 3. 카카오 개발자 콘솔
+
+**내 애플리케이션 → 플랫폼 → Web → 사이트 도메인**에 배포 주소(예: `https://eco-check-ni.vercel.app`)를 추가합니다.
+등록하지 않으면 배포 주소에서 주소 검색(우편번호)과 지도가 동작하지 않습니다.
+
+<br>
+
+## 4. 운영 참고
+
+- **콜드 스타트**: Render 무료 인스턴스는 15분 동안 요청이 없으면 잠듭니다. 깨어나는 데 1분 넘게 걸릴 수 있으니, 시연 전에는 사이트를 미리 한 번 열어 둡니다.
+- **AI 응답 캐시**: AI 답변은 메모리에 캐시되며 서버가 재시작되면 사라집니다.
+- **Gemini 할당량**: 무료 할당량이 소진되면 규칙 기반 답으로 대체됩니다. 안정적으로 운영하려면 결제를 켜거나 예비 키를 준비합니다.
